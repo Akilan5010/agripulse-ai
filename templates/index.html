@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriPulse AI - Smart Crop & Fertilizer Recommendation</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script href="https://cdn.jsdelivr.net/npm/chart.js" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Background Gradients -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="logo">
+            <i class="fa-solid fa-seedling logo-icon"></i>
+            <span class="logo-text">AgriPulse <span class="accent-text">AI</span></span>
+        </div>
+        <nav class="nav">
+            <ul class="nav-list" id="nav-list">
+                <!-- Logged Out Links -->
+                <li class="nav-item guest-only"><a href="#auth" class="nav-link active"><i class="fa-solid fa-right-to-bracket"></i> Login / Register</a></li>
+                
+                <!-- Logged In Links -->
+                <li class="nav-item user-only"><a href="#dashboard" class="nav-link"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+                <li class="nav-item user-only"><a href="#predict" class="nav-link"><i class="fa-solid fa-wand-magic-sparkles"></i> Get Recommendation</a></li>
+                <li class="nav-item user-only"><a href="#crops" class="nav-link"><i class="fa-solid fa-book-open"></i> Crop Guide</a></li>
+                <li class="nav-item admin-only"><a href="#admin" class="nav-link"><i class="fa-solid fa-lock"></i> Admin Panel</a></li>
+                <li class="nav-item user-only"><a href="#profile" class="nav-link"><i class="fa-solid fa-user-gear"></i> Profile</a></li>
+                <li class="nav-item user-only"><a href="#" id="btn-logout" class="nav-link logout-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+            </ul>
+        </nav>
+        <button class="mobile-nav-toggle" id="mobile-nav-toggle">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </header>
+
+    <main class="main-content">
+        <!-- SCREEN 1: Authentication (Login / Register) -->
+        <section id="screen-auth" class="screen active">
+            <div class="auth-container">
+                <div class="auth-banner">
+                    <div class="banner-content">
+                        <i class="fa-solid fa-wheat-awn banner-icon"></i>
+                        <h1>Smarter Farming Through AI</h1>
+                        <p>Optimize your harvest, conserve resources, and maximize yield with our machine learning models trained on soil parameters and regional climates.</p>
+                        <div class="banner-features">
+                            <div class="feature-badge"><i class="fa-solid fa-check"></i> Crop Suggestions</div>
+                            <div class="feature-badge"><i class="fa-solid fa-check"></i> Nutrient Balance</div>
+                            <div class="feature-badge"><i class="fa-solid fa-check"></i> Weather Sync</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="auth-card">
+                    <div class="auth-tabs">
+                        <button class="auth-tab active" id="tab-login">Login</button>
+                        <button class="auth-tab" id="tab-register">Register</button>
+                    </div>
+                    
+                    <!-- Login Form -->
+                    <form id="form-login" class="auth-form active">
+                        <h2>Welcome Back</h2>
+                        <p class="auth-subtitle">Login to view dashboard and predictions</p>
+                        <div class="input-group">
+                            <i class="fa-solid fa-user field-icon"></i>
+                            <input type="text" id="login-username" required placeholder="Username">
+                        </div>
+                        <div class="input-group">
+                            <i class="fa-solid fa-lock field-icon"></i>
+                            <input type="password" id="login-password" required placeholder="Password">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Log In <i class="fa-solid fa-arrow-right-to-bracket"></i></button>
+                    </form>
+
+                    <!-- Registration Form -->
+                    <form id="form-register" class="auth-form">
+                        <h2>Create Account</h2>
+                        <p class="auth-subtitle">Register to start getting recommendations</p>
+                        <div class="input-grid">
+                            <div class="input-group">
+                                <i class="fa-solid fa-user field-icon"></i>
+                                <input type="text" id="reg-username" required placeholder="Username">
+                            </div>
+                            <div class="input-group">
+                                <i class="fa-solid fa-signature field-icon"></i>
+                                <input type="text" id="reg-fullname" required placeholder="Full Name">
+                            </div>
+                            <div class="input-group">
+                                <i class="fa-solid fa-phone field-icon"></i>
+                                <input type="tel" id="reg-contact" required placeholder="Contact Number">
+                            </div>
+                            <div class="input-group">
+                                <i class="fa-solid fa-map-location-dot field-icon"></i>
+                                <input type="text" id="reg-location" required placeholder="Location / District">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <i class="fa-solid fa-lock field-icon"></i>
+                            <input type="password" id="reg-password" required placeholder="Password">
+                        </div>
+                        <button type="submit" class="btn btn-accent btn-block">Register Farmer <i class="fa-solid fa-user-plus"></i></button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 2: Farmer Dashboard -->
+        <section id="screen-dashboard" class="screen">
+            <div class="dashboard-header">
+                <div>
+                    <h1 class="welcome-text">Hello, <span id="dash-user-name">Farmer</span></h1>
+                    <p class="subtitle">Here is your agricultural intelligence dashboard</p>
+                </div>
+                <a href="#predict" class="btn btn-primary"><i class="fa-solid fa-plus"></i> New Prediction</a>
+            </div>
+
+            <!-- Dashboard Summary Grid -->
+            <div class="dashboard-summary">
+                <div class="stat-card glass">
+                    <div class="stat-icon bg-green"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Total Predictions</span>
+                        <h2 class="stat-val" id="dash-total-predictions">0</h2>
+                    </div>
+                </div>
+                <div class="stat-card glass">
+                    <div class="stat-icon bg-gold"><i class="fa-solid fa-crop-simple"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Top Recommendation</span>
+                        <h2 class="stat-val" id="dash-top-crop">N/A</h2>
+                    </div>
+                </div>
+                <div class="stat-card glass">
+                    <div class="stat-icon bg-blue"><i class="fa-solid fa-flask"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Latest Soil pH</span>
+                        <h2 class="stat-val" id="dash-latest-ph">N/A</h2>
+                    </div>
+                </div>
+                <div class="stat-card glass">
+                    <div class="stat-icon bg-orange"><i class="fa-solid fa-cloud-sun-rain"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Latest Rainfall</span>
+                        <h2 class="stat-val" id="dash-latest-rain">N/A</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="dashboard-charts">
+                <div class="chart-card glass">
+                    <h3>Soil Nutrients Analysis (Latest)</h3>
+                    <p class="chart-desc">Compares Nitrogen, Phosphorus, Potassium</p>
+                    <div class="chart-container">
+                        <canvas id="chart-soil-nutrients"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card glass">
+                    <h3>Recommended Crop Share</h3>
+                    <p class="chart-desc">Historical crops predicted for your land</p>
+                    <div class="chart-container">
+                        <canvas id="chart-crop-share"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prediction History Table -->
+            <div class="history-section glass">
+                <div class="history-header">
+                    <h3>Recommendation History</h3>
+                    <button class="btn btn-text btn-icon" id="btn-refresh-history"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="table" id="table-history">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Soil Profile (N-P-K / pH)</th>
+                                <th>Weather (Temp / Rain)</th>
+                                <th>Recommended Crop</th>
+                                <th>Fertilizer Suggested</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-rows">
+                            <!-- Populated dynamically -->
+                            <tr>
+                                <td colspan="6" class="table-empty">No prediction records found. Get a crop recommendation to start.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 3: Recommendation Engine (Inputs & Results) -->
+        <section id="screen-predict" class="screen">
+            <div class="predict-container">
+                <div class="predict-form-card glass">
+                    <h2>Crop Recommendation Engine</h2>
+                    <p class="form-desc">Provide your soil parameters and weather coordinates to calculate matching crops and fertilizer balances.</p>
+                    
+                    <form id="form-predict">
+                        <!-- Module 2: Soil Data -->
+                        <div class="form-section">
+                            <h3><i class="fa-solid fa-mountain-sun"></i> 1. Soil Parameters</h3>
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label for="soil-type">Soil Type</label>
+                                    <select id="soil-type" required>
+                                        <option value="" disabled selected>Select soil type</option>
+                                        <option value="Alluvial">Alluvial Soil</option>
+                                        <option value="Black">Black Soil (Clayey)</option>
+                                        <option value="Red">Red / Sandy Soil</option>
+                                        <option value="Laterite">Laterite Soil</option>
+                                        <option value="Loamy">Loamy Soil</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label for="soil-ph">Soil pH <span id="ph-val-display">(6.5)</span></label>
+                                    <input type="range" id="soil-ph" min="3.5" max="9.0" step="0.1" value="6.5" required>
+                                </div>
+                                <div class="input-group">
+                                    <label for="soil-moisture">Soil Moisture (%)</label>
+                                    <input type="number" id="soil-moisture" min="0" max="100" step="0.1" placeholder="e.g. 45" required>
+                                </div>
+                            </div>
+                            
+                            <div class="input-grid grid-3">
+                                <div class="input-group">
+                                    <label for="soil-n">Nitrogen (N) <span class="unit">mg/kg</span></label>
+                                    <input type="number" id="soil-n" min="0" max="200" placeholder="e.g. 80" required>
+                                </div>
+                                <div class="input-group">
+                                    <label for="soil-p">Phosphorus (P) <span class="unit">mg/kg</span></label>
+                                    <input type="number" id="soil-p" min="0" max="200" placeholder="e.g. 50" required>
+                                </div>
+                                <div class="input-group">
+                                    <label for="soil-k">Potassium (K) <span class="unit">mg/kg</span></label>
+                                    <input type="number" id="soil-k" min="0" max="200" placeholder="e.g. 40" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module 3: Weather Data -->
+                        <div class="form-section">
+                            <div class="section-title-action">
+                                <h3><i class="fa-solid fa-cloud-sun-rain"></i> 2. Weather Parameters</h3>
+                                <button type="button" id="btn-fetch-weather" class="btn btn-outline btn-sm">
+                                    <i class="fa-solid fa-location-crosshairs animate-pulse"></i> Sync Live Weather
+                                </button>
+                            </div>
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label for="weather-temp">Temperature (°C)</label>
+                                    <input type="number" id="weather-temp" step="0.1" placeholder="e.g. 27.5" required>
+                                </div>
+                                <div class="input-group">
+                                    <label for="weather-humidity">Humidity (%)</label>
+                                    <input type="number" id="weather-humidity" min="0" max="100" step="0.1" placeholder="e.g. 75" required>
+                                </div>
+                                <div class="input-group">
+                                    <label for="weather-rainfall">Rainfall (mm)</label>
+                                    <input type="number" id="weather-rainfall" min="0" max="1000" step="0.1" placeholder="e.g. 150" required>
+                                </div>
+                            </div>
+                            <div id="weather-sync-status" class="helper-text text-green hidden">
+                                <i class="fa-solid fa-circle-check"></i> Weather coordinates successfully synced from public Open-Meteo nodes.
+                            </div>
+                            <div id="weather-forecast-container" class="weather-forecast-container hidden">
+                                <h4>3-Day Regional Weather Forecast</h4>
+                                <div class="forecast-cards" id="forecast-cards">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-accent btn-large btn-block" id="btn-predict-submit">
+                            Analyze & Predict Crop <i class="fa-solid fa-microchip"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Prediction Report Card (Results) -->
+                <div class="predict-result-card glass hidden" id="predict-result">
+                    <div class="report-actions no-print">
+                        <button class="btn btn-outline btn-sm" id="btn-print-report"><i class="fa-solid fa-print"></i> Print Report</button>
+                        <button class="btn btn-text btn-sm" id="btn-close-report"><i class="fa-solid fa-xmark"></i> Close</button>
+                    </div>
+
+                    <!-- Print Layout wrapper -->
+                    <div class="printable-report" id="report-printable-area">
+                        <div class="report-header">
+                            <div class="report-logo">
+                                <i class="fa-solid fa-leaf text-green"></i>
+                                <span>AgriPulse AI</span>
+                            </div>
+                            <div class="report-date">
+                                <strong>Date Generated:</strong> <span id="report-timestamp">--</span>
+                            </div>
+                        </div>
+
+                        <div class="report-meta">
+                            <h4>Farmer Information</h4>
+                            <div class="meta-grid">
+                                <div><strong>Farmer Name:</strong> <span id="report-farmer-name">--</span></div>
+                                <div><strong>Location:</strong> <span id="report-farmer-location">--</span></div>
+                            </div>
+                        </div>
+
+                        <div class="recommendation-hero">
+                            <span class="badge">AI MATCH FOUND</span>
+                            <h1 id="result-crop-name">Rice</h1>
+                            <div class="confidence-bar-wrapper">
+                                <span>Prediction Confidence:</span>
+                                <strong id="result-confidence">98%</strong>
+                                <div class="confidence-bar"><div class="fill" id="result-confidence-bar" style="width: 98%;"></div></div>
+                            </div>
+                        </div>
+
+                        <!-- Grid details -->
+                        <div class="report-details-grid">
+                            <!-- Soil metrics -->
+                            <div class="report-block">
+                                <h4>Input Soil & Weather Profile</h4>
+                                <ul class="metric-list">
+                                    <li><span>Soil Type:</span> <strong id="rep-soil-type">Alluvial</strong></li>
+                                    <li><span>Soil pH:</span> <strong id="rep-soil-ph">6.5</strong></li>
+                                    <li><span>N-P-K Nutrients:</span> <strong id="rep-soil-npk">80 - 50 - 40</strong></li>
+                                    <li><span>Moisture:</span> <strong id="rep-soil-moist">45%</strong></li>
+                                    <li><span>Temperature:</span> <strong id="rep-temp">28°C</strong></li>
+                                    <li><span>Humidity:</span> <strong id="rep-humidity">75%</strong></li>
+                                    <li><span>Rainfall:</span> <strong id="rep-rain">150mm</strong></li>
+                                </ul>
+                            </div>
+
+                            <!-- Crop Profile -->
+                            <div class="report-block">
+                                <h4>Crop Information Handbook</h4>
+                                <ul class="metric-list">
+                                    <li><span>Growing Season:</span> <strong id="result-season">--</strong></li>
+                                    <li><span>Water Requirement:</span> <strong id="result-water">--</strong></li>
+                                    <li><span>Expected Yield:</span> <strong id="result-yield">--</strong></li>
+                                    <li><span>Harvest Duration:</span> <strong id="result-duration">--</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Fertilizer Suggestion -->
+                        <div class="report-block fertilizer-block">
+                            <h4><i class="fa-solid fa-flask-plaster"></i> Fertilizer Optimization Suggestion</h4>
+                            <div class="fertilizer-card-grid">
+                                <div class="fert-metric">
+                                    <span class="label">Suggested Fertilizer</span>
+                                    <h3 id="result-fert-name">Urea + MOP</h3>
+                                </div>
+                                <div class="fert-metric">
+                                    <span class="label">Total Quantity</span>
+                                    <h3 id="result-fert-qty">45 kg / acre</h3>
+                                </div>
+                            </div>
+                            <div class="schedule-box">
+                                <strong>Application Schedule & Instructions:</strong>
+                                <p id="result-fert-schedule">Apply 50% basal dose during transplanting...</p>
+                            </div>
+                        </div>
+
+                        <div class="crop-desc-box report-block">
+                            <h4>Crop Profile Description</h4>
+                            <p id="result-crop-desc">Rice description goes here...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 4: Crop Encyclopedia -->
+        <section id="screen-crops" class="screen">
+            <div class="crops-header">
+                <div>
+                    <h1>Crop Database Directory</h1>
+                    <p class="subtitle">Search and study crop profiles, conditions, and yield guides.</p>
+                </div>
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="crop-search" placeholder="Search crop database...">
+                </div>
+            </div>
+
+            <!-- Crop Directory Grid -->
+            <div class="crops-grid" id="crops-grid">
+                <!-- Dynamically loaded cards -->
+            </div>
+        </section>
+
+        <!-- SCREEN 5: Admin Panel -->
+        <section id="screen-admin" class="screen">
+            <div class="admin-header">
+                <h1>Administrative Controls</h1>
+                <p class="subtitle">Manage agricultural datasets, system reports, registered farmers, and retrain ML models.</p>
+            </div>
+
+            <div class="admin-layout">
+                <!-- Sidebar tabs -->
+                <aside class="admin-sidebar glass">
+                    <ul class="admin-tabs">
+                        <li class="admin-tab active" id="tab-adm-stats"><i class="fa-solid fa-chart-pie"></i> System Stats & Reports</li>
+                        <li class="admin-tab" id="tab-adm-users"><i class="fa-solid fa-users"></i> Farmer Accounts</li>
+                        <li class="admin-tab" id="tab-adm-crops"><i class="fa-solid fa-wheat-awn"></i> Crop Catalog</li>
+                        <li class="admin-tab" id="tab-adm-model"><i class="fa-solid fa-gears"></i> AI Model Management</li>
+                    </ul>
+                </aside>
+
+                <!-- Admin contents window -->
+                <div class="admin-content-window glass">
+                    <!-- Tab 1: Stats & Reports -->
+                    <div id="admin-panel-stats" class="admin-panel active">
+                        <h2>System Stats & Audits</h2>
+                        <p class="panel-desc">Real-time counts of database rows, prediction traffic, and top matching queries.</p>
+                        
+                        <div class="dashboard-summary">
+                            <div class="stat-card transparent">
+                                <div class="stat-info">
+                                    <span class="stat-label">Registered Farmers</span>
+                                    <h2 id="adm-stat-farmers">0</h2>
+                                </div>
+                            </div>
+                            <div class="stat-card transparent">
+                                <div class="stat-info">
+                                    <span class="stat-label">Total Predictions Logged</span>
+                                    <h2 id="adm-stat-predictions">0</h2>
+                                </div>
+                            </div>
+                            <div class="stat-card transparent">
+                                <div class="stat-info">
+                                    <span class="stat-label">DB Soil Records</span>
+                                    <h2 id="adm-stat-soils">0</h2>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="recent-audits-section">
+                            <h3>Recent Recommendation Logs</h3>
+                            <div class="table-wrapper">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Log ID</th>
+                                            <th>Farmer Name</th>
+                                            <th>Predicted Crop</th>
+                                            <th>Date & Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-audit-rows">
+                                        <!-- populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: User Management -->
+                    <div id="admin-panel-users" class="admin-panel">
+                        <h2>Farmer Database Directory</h2>
+                        <p class="panel-desc">Manage system roles, view contact details, and locations of users.</p>
+                        
+                        <div class="table-wrapper">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>User ID</th>
+                                        <th>Username</th>
+                                        <th>Full Name</th>
+                                        <th>Contact</th>
+                                        <th>Location</th>
+                                        <th>Role</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-user-rows">
+                                    <!-- populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Crop Database Management -->
+                    <div id="admin-panel-crops" class="admin-panel">
+                        <div class="panel-header-action">
+                            <h2>Crop Database Catalog</h2>
+                            <button class="btn btn-accent btn-sm" id="btn-admin-add-crop"><i class="fa-solid fa-plus"></i> Add Crop Profile</button>
+                        </div>
+                        <p class="panel-desc">Add, edit, or remove crops listed in the predictive crop directory and manual guides.</p>
+                        
+                        <!-- Inline Crop Form (Hidden by default) -->
+                        <div id="admin-crop-form-container" class="admin-crop-form glass hidden">
+                            <h3 id="admin-crop-form-title">Add New Crop</h3>
+                            <form id="admin-crop-form">
+                                <input type="hidden" id="adm-crop-id">
+                                <div class="input-grid">
+                                    <div class="input-group">
+                                        <label for="adm-crop-name">Crop Name</label>
+                                        <input type="text" id="adm-crop-name" required placeholder="e.g. Soybeans">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="adm-crop-season">Growing Season</label>
+                                        <input type="text" id="adm-crop-season" required placeholder="e.g. Rabi (Winter)">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="adm-crop-water">Water Requirement</label>
+                                        <input type="text" id="adm-crop-water" required placeholder="e.g. Moderate (600 mm)">
+                                    </div>
+                                </div>
+                                <div class="input-grid">
+                                    <div class="input-group">
+                                        <label for="adm-crop-yield">Expected Yield</label>
+                                        <input type="text" id="adm-crop-yield" required placeholder="e.g. 1.2 tons/acre">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="adm-crop-duration">Harvest Duration</label>
+                                        <input type="text" id="adm-crop-duration" required placeholder="e.g. 100 days">
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label for="adm-crop-desc">Description</label>
+                                    <textarea id="adm-crop-desc" rows="3" required placeholder="Detailed botanical description and farming steps..."></textarea>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-accent btn-sm">Save Crop Profile</button>
+                                    <button type="button" class="btn btn-outline btn-sm" id="btn-admin-cancel-crop">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="table-wrapper">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Season</th>
+                                        <th>Water Req.</th>
+                                        <th>Expected Yield</th>
+                                        <th>Duration</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-crop-rows">
+                                    <!-- populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: AI Model Management -->
+                    <div id="admin-panel-model" class="admin-panel">
+                        <h2>Machine Learning Engine Administration</h2>
+                        <p class="panel-desc">Monitor model accuracy, feature importances, dataset sample weights, and trigger retraining logs.</p>
+                        
+                        <div class="model-stats-grid">
+                            <div class="model-stat-card">
+                                <span>Model Classifier</span>
+                                <h3>Random Forest (100 Trees)</h3>
+                            </div>
+                            <div class="model-stat-card">
+                                <span>Dataset Samples</span>
+                                <h3 id="adm-model-samples">1650</h3>
+                            </div>
+                            <div class="model-stat-card">
+                                <span>Global Accuracy</span>
+                                <h3 id="adm-model-accuracy">98.2%</h3>
+                            </div>
+                        </div>
+
+                        <!-- Dataset Administration -->
+                        <div class="dataset-admin-section glass">
+                            <h3><i class="fa-solid fa-database"></i> Training Dataset Manager</h3>
+                            <p class="section-desc">Download, update, or append custom records to the active training dataset.</p>
+                            
+                            <div class="dataset-actions-grid">
+                                <div class="dataset-download-upload">
+                                    <h4>Backup & Overwrite CSV</h4>
+                                    <div class="btn-group">
+                                        <a href="/api/admin/dataset/download" class="btn btn-outline btn-sm"><i class="fa-solid fa-download"></i> Download Dataset CSV</a>
+                                    </div>
+                                    <form id="form-dataset-upload" class="dataset-upload-form">
+                                        <label for="dataset-file-input">Upload New Dataset (.csv)</label>
+                                        <div class="file-upload-wrapper">
+                                            <input type="file" id="dataset-file-input" accept=".csv" required>
+                                            <button type="submit" class="btn btn-accent btn-sm" id="btn-upload-dataset"><i class="fa-solid fa-cloud-arrow-up"></i> Upload CSV</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                
+                                <div class="dataset-add-row">
+                                    <h4>Add Individual Sample Row</h4>
+                                    <form id="form-dataset-add-row" class="dataset-row-form">
+                                        <div class="row-form-grid">
+                                            <input type="number" id="ds-n" placeholder="N" min="0" max="200" required>
+                                            <input type="number" id="ds-p" placeholder="P" min="0" max="200" required>
+                                            <input type="number" id="ds-k" placeholder="K" min="0" max="200" required>
+                                            <input type="number" id="ds-temp" placeholder="Temp" step="0.1" required>
+                                            <input type="number" id="ds-hum" placeholder="Hum" min="0" max="100" step="0.1" required>
+                                            <input type="number" id="ds-ph" placeholder="pH" min="3.5" max="9.0" step="0.1" required>
+                                            <input type="number" id="ds-rain" placeholder="Rain" step="0.1" required>
+                                            <input type="text" id="ds-label" placeholder="Crop Label" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Append Row</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feature Importance Progress Bars -->
+                        <div class="model-sections">
+                            <div class="importance-section">
+                                <h3>Feature Importances</h3>
+                                <p class="chart-desc">Weight of each parameter in determining crop predictions</p>
+                                <div id="feature-importances-container" class="feature-importance-list">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+                            
+                            <div class="actions-section">
+                                <h3>Model Retraining Hook</h3>
+                                <p class="chart-desc">Retrain the Random Forest model on the dataset if configurations or weights have been adjusted.</p>
+                                <button class="btn btn-accent" id="btn-retrain-model">
+                                    <i class="fa-solid fa-rotate animate-spin"></i> Trigger Model Retraining
+                                </button>
+                                <div class="retrain-log" id="retrain-log-output">
+                                    Ready. Model loaded from ml/model.pkl.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 6: Profile & Settings -->
+        <section id="screen-profile" class="screen">
+            <div class="profile-container glass">
+                <h2>Farmer Profile & Configuration</h2>
+                <p class="subtitle font-sm">Modify registration credentials, contact details, and locations.</p>
+                
+                <form id="form-profile">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="prof-username">Username (Non-editable)</label>
+                            <input type="text" id="prof-username" readonly disabled>
+                        </div>
+                        <div class="input-group">
+                            <label for="prof-fullname">Full Name</label>
+                            <input type="text" id="prof-fullname" required placeholder="Your Name">
+                        </div>
+                        <div class="input-group">
+                            <label for="prof-contact">Contact Number</label>
+                            <input type="tel" id="prof-contact" required placeholder="Your Phone">
+                        </div>
+                        <div class="input-group">
+                            <label for="prof-location">Location / District</label>
+                            <input type="text" id="prof-location" required placeholder="District Name">
+                        </div>
+                    </div>
+
+                    <hr class="form-divider">
+
+                    <h3>Change Password (Optional)</h3>
+                    <div class="input-group">
+                        <label for="prof-password">New Password</label>
+                        <input type="password" id="prof-password" placeholder="Leave blank to keep current password">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-large">Update Profile Details <i class="fa-solid fa-circle-check"></i></button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer no-print">
+        <p>&copy; 2026 AgriPulse AI. All rights reserved. Powered by Machine Learning & Agriculture Science.</p>
+    </footer>
+
+    <!-- App Logic Scripts -->
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+    <script src="/static/js/admin.js"></script>
+</body>
+</html>

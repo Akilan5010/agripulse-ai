@@ -1,0 +1,94 @@
+{
+    "accuracy": 1.0,
+    "sample_count": 1650,
+    "feature_importances": {
+        "N": 0.18391469979733838,
+        "P": 0.160310565289582,
+        "K": 0.160116585561003,
+        "temp": 0.1206028956787824,
+        "humidity": 0.185322781273344,
+        "pH": 0.04212741124510257,
+        "rainfall": 0.1476050611548477
+    },
+    "classification_report": {
+        "Banana": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "Chickpea": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "Coconut": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "Coffee": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "Cotton": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "Kidneybeans": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "Maize": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "Mango": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "Orange": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "Rice": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "Wheat": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 30.0
+        },
+        "accuracy": 1.0,
+        "macro avg": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 330.0
+        },
+        "weighted avg": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 330.0
+        }
+    }
+}
